@@ -50,8 +50,9 @@ default['kapacitor']['version'] = '1.5.0'
 default['kapacitor']['shasums'] = 'ed0c8e3f7758f679bc11fca3dbb91904aeb2e49bb9e67fb53ebaa209dad79358'
 default['kapacitor']['download_url'] = 'https://dl.influxdata.com/kapacitor/releases'
 
-default['kapacitor']['port']['http'] = 8086
+default['kapacitor']['port']['http'] = 9092
 
+default['kapacitor']['config_file_path'] = '/etc/kapacitor/kapacitor.conf'
 default['kapacitor']['telegraf']['consul_template_inputs_file'] = 'telegraf_kapacitor_inputs.ctmpl'
 
 #

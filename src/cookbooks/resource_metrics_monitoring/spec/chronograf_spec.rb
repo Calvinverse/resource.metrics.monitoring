@@ -73,7 +73,7 @@ describe 'resource_metrics_monitoring::chronograf' do
     end
   end
 
-  context 'creates the configuration files for chronograf' do
+  context 'lets chronograf through the firewall' do
     let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
 
     it 'opens the Chronograf http port' do
@@ -94,48 +94,45 @@ describe 'resource_metrics_monitoring::chronograf' do
       {{ if keyExists "config/services/consul/domain" }}
       {{ if keyExists "config/services/metrics/protocols/http/host" }}
       {{ if keyExists "config/services/metrics/protocols/http/port" }}
-      FLAG=$(cat /var/log/chronograf_default.log)
-      if [ "$FLAG" = "NotInitialized" ]; then
-          echo "Write the Chronograf configuration ..."
-          cat <<'EOT' > /etc/default/chronograf
+
+      echo "Write the Chronograf configuration ..."
+      cat <<'EOT' > /etc/default/chronograf
       HOST=0.0.0.0
       PORT=8888
       BASE_PATH=dashboards/monitoring
 
       INFLUXDB_URL=http//{{ key "config/services/metrics/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/metrics/protocols/http/port" }}
 
-      KAPACITOR_URL=http://127.0.0.1:8086
+      KAPACITOR_URL=http://127.0.0.1:9092
       EOT
-          chown chronograf:chronograf /etc/default/chronograf
-          chmod 550 /etc/default/chronograf
 
-          if ( ! $(systemctl is-enabled --quiet chronograf) ); then
-            systemctl enable chronograf
+      chown chronograf:chronograf /etc/default/chronograf
+      chmod 550 /etc/default/chronograf
 
-            while true; do
-              if ( (systemctl is-enabled --quiet chronograf) ); then
-                  break
-              fi
+      if ( ! $(systemctl is-enabled --quiet chronograf) ); then
+        systemctl enable chronograf
 
-              sleep 1
-            done
+        while true; do
+          if ( (systemctl is-enabled --quiet chronograf) ); then
+              break
           fi
 
-          if ( ! (systemctl is-active --quiet chronograf) ); then
-            systemctl start chronograf
+          sleep 1
+        done
+      fi
 
-            while true; do
-              if ( (systemctl is-active --quiet chronograf) ); then
-                  break
-              fi
+      if ( ! (systemctl is-active --quiet chronograf) ); then
+        systemctl start chronograf
 
-              sleep 1
-            done
-          else
-            systemctl restart chronograf
+        while true; do
+          if ( (systemctl is-active --quiet chronograf) ); then
+              break
           fi
 
-          echo "Initialized" > /var/log/chronograf_default.log
+          sleep 1
+        done
+      else
+        systemctl restart chronograf
       fi
 
       {{ else }}
@@ -148,7 +145,7 @@ describe 'resource_metrics_monitoring::chronograf' do
       echo "Not all Consul K-V values are available. Will not start Capacitor."
       {{ end }}
     CONF
-    it 'creates telegraf influxdb input template file in the consul-template template directory' do
+    it 'creates telegraf chronograf input template file in the consul-template template directory' do
       expect(chef_run).to create_file('/etc/consul-template.d/templates/chronograf_start_script.ctmpl')
         .with_content(chronograf_run_script_template_content)
         .with(
@@ -158,7 +155,7 @@ describe 'resource_metrics_monitoring::chronograf' do
         )
     end
 
-    consul_template_telegraf_influxdb_inputs_content = <<~CONF
+    consul_template_chronograf_run_script_content = <<~CONF
       # This block defines the configuration for a template. Unlike other blocks,
       # this block may be specified multiple times to configure multiple templates.
       # It is also possible to configure templates via the CLI directly.
@@ -223,9 +220,9 @@ describe 'resource_metrics_monitoring::chronograf' do
         }
       }
     CONF
-    it 'creates telegraf_influxdb_inputs.hcl in the consul-template template directory' do
-      expect(chef_run).to create_file('/etc/consul-template.d/conf/telegraf_influxdb_inputs.hcl')
-        .with_content(consul_template_telegraf_influxdb_inputs_content)
+    it 'creates chronograf_start_script.hcl in the consul-template template directory' do
+      expect(chef_run).to create_file('/etc/consul-template.d/conf/chronograf_start_script.hcl')
+        .with_content(consul_template_chronograf_run_script_content)
         .with(
           group: 'root',
           owner: 'root',

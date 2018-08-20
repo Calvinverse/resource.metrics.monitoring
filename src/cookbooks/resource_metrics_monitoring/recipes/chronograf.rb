@@ -26,7 +26,7 @@ end
 
 service_name = 'chronograf'
 service service_name do
-  action :enable
+  action :disable
 end
 
 #
@@ -110,10 +110,9 @@ file "#{consul_template_template_path}/#{chronograf_default_template_file}" do
     {{ if keyExists "config/services/consul/domain" }}
     {{ if keyExists "config/services/metrics/protocols/http/host" }}
     {{ if keyExists "config/services/metrics/protocols/http/port" }}
-    FLAG=$(cat #{flag_default})
-    if [ "$FLAG" = "NotInitialized" ]; then
-        echo "Write the Chronograf configuration ..."
-        cat <<'EOT' > #{chronograf_default_file}
+
+    echo "Write the Chronograf configuration ..."
+    cat <<'EOT' > #{chronograf_default_file}
     HOST=0.0.0.0
     PORT=#{chronograf_http_port}
     BASE_PATH=#{proxy_path}
@@ -122,36 +121,34 @@ file "#{consul_template_template_path}/#{chronograf_default_template_file}" do
 
     KAPACITOR_URL=http://127.0.0.1:#{kapacitor_http_port}
     EOT
-        chown #{node['chronograf']['service_user']}:#{node['chronograf']['service_group']} #{chronograf_default_file}
-        chmod 550 #{chronograf_default_file}
 
-        if ( ! $(systemctl is-enabled --quiet #{service_name}) ); then
-          systemctl enable #{service_name}
+    chown #{node['chronograf']['service_user']}:#{node['chronograf']['service_group']} #{chronograf_default_file}
+    chmod 550 #{chronograf_default_file}
 
-          while true; do
-            if ( (systemctl is-enabled --quiet #{service_name}) ); then
-                break
-            fi
+    if ( ! $(systemctl is-enabled --quiet #{service_name}) ); then
+      systemctl enable #{service_name}
 
-            sleep 1
-          done
+      while true; do
+        if ( (systemctl is-enabled --quiet #{service_name}) ); then
+            break
         fi
 
-        if ( ! (systemctl is-active --quiet #{service_name}) ); then
-          systemctl start #{service_name}
+        sleep 1
+      done
+    fi
 
-          while true; do
-            if ( (systemctl is-active --quiet #{service_name}) ); then
-                break
-            fi
+    if ( ! (systemctl is-active --quiet #{service_name}) ); then
+      systemctl start #{service_name}
 
-            sleep 1
-          done
-        else
-          systemctl restart #{service_name}
+      while true; do
+        if ( (systemctl is-active --quiet #{service_name}) ); then
+            break
         fi
 
-        echo "Initialized" > #{flag_default}
+        sleep 1
+      done
+    else
+      systemctl restart #{service_name}
     fi
 
     {{ else }}
@@ -199,7 +196,7 @@ file "#{consul_template_config_path}/chronograf_start_script.hcl" do
 
       # This is the maximum amount of time to wait for the optional command to
       # return. Default is 30s.
-      command_timeout = "60s"
+      command_timeout = "15s"
 
       # Exit with an error when accessing a struct or map field/key that does not
       # exist. The default behavior will print "<no value>" when accessing a field
