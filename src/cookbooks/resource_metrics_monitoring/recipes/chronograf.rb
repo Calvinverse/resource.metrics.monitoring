@@ -54,7 +54,7 @@ file '/etc/consul/conf.d/chronograf-http.json' do
         {
           "checks": [
             {
-              "http": "http://localhost:#{chronograf_http_port}/api/health",
+              "http": "http://localhost:#{chronograf_http_port}/#{proxy_path}/chronograf/v1",
               "id": "chronograf_http_health_check",
               "interval": "30s",
               "method": "GET",
@@ -115,7 +115,7 @@ file "#{consul_template_template_path}/#{chronograf_default_template_file}" do
     cat <<'EOT' > #{chronograf_default_file}
     HOST=0.0.0.0
     PORT=#{chronograf_http_port}
-    BASE_PATH=#{proxy_path}
+    BASE_PATH=/#{proxy_path}
 
     INFLUXDB_URL=http//{{ key "config/services/metrics/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/metrics/protocols/http/port" }}
 

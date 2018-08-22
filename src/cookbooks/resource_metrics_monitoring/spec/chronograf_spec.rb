@@ -47,7 +47,7 @@ describe 'resource_metrics_monitoring::chronograf' do
           {
             "checks": [
               {
-                "http": "http://localhost:8888/api/health",
+                "http": "http://localhost:8888/dashboards/monitoring/chronograf/v1",
                 "id": "chronograf_http_health_check",
                 "interval": "30s",
                 "method": "GET",
@@ -99,7 +99,7 @@ describe 'resource_metrics_monitoring::chronograf' do
       cat <<'EOT' > /etc/default/chronograf
       HOST=0.0.0.0
       PORT=8888
-      BASE_PATH=dashboards/monitoring
+      BASE_PATH=/dashboards/monitoring
 
       INFLUXDB_URL=http//{{ key "config/services/metrics/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/metrics/protocols/http/port" }}
 
