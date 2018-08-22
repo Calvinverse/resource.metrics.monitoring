@@ -20,8 +20,8 @@ Describe 'The firewall' {
     }
 
     Context 'should allow chronograf' {
-        It 'on port 8086' {
-            ($ufwOutput | Where-Object {$_ -match '(8086/tcp)\s*(ALLOW)\s*(Anywhere)'} ) | Should Not Be $null
+        It 'on port 8888' {
+            ($ufwOutput | Where-Object {$_ -match '(8888/tcp)\s*(ALLOW)\s*(Anywhere)'} ) | Should Not Be $null
         }
     }
 

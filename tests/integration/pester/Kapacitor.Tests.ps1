@@ -1,16 +1,16 @@
 Describe 'The kapacitor application' {
     Context 'is installed' {
-        It 'with binaries in /usr/local/jenkins' {
-            '/usr/local/jenkins/jenkins.war' | Should Exist
+        It 'with binaries in /usr/bin/kapacitor' {
+            '/usr/bin/kapacitor' | Should Exist
         }
 
-        It 'with configuration in /var/jenkins' {
-            '/var/jenkins' | Should Exist
+        It 'with configuration in /etc/kapacitor' {
+            '/etc/kapacitor/kapacitor.conf' | Should Exist
         }
     }
 
     Context 'has been daemonized' {
-        $serviceConfigurationPath = '/etc/systemd/system/kapacitor.service'
+        $serviceConfigurationPath = '/lib/systemd/system/kapacitor.service'
         if (-not (Test-Path $serviceConfigurationPath))
         {
             It 'has a systemd configuration' {
@@ -19,24 +19,24 @@ Describe 'The kapacitor application' {
         }
 
         $expectedContent = @'
-[Service]
-Type = forking
-PIDFile = /usr/local/jenkins/jenkins_pid
-ExecStart = /usr/local/jenkins/run_jenkins.sh
-ExecReload = /usr/bin/curl http://localhost:8080/builds/reload
-ExecStop = /usr/bin/curl http://localhost:8080/builds/safeExit
-Restart = on-failure
-User = jenkins
-EnvironmentFile = /etc/jenkins_environment
+# If you modify this, please also make sure to edit init.sh
 
 [Unit]
-Description = Jenkins CI system
-Documentation = https://jenkins.io
-Requires = network-online.target
-After = network-online.target
+Description=Time series data processing engine.
+Documentation=https://github.com/influxdb/kapacitor
+After=network.target
+
+[Service]
+User=kapacitor
+Group=kapacitor
+LimitNOFILE=65536
+EnvironmentFile=-/etc/default/kapacitor
+ExecStart=/usr/bin/kapacitord -config /etc/kapacitor/kapacitor.conf $KAPACITOR_OPTS
+KillMode=process
+Restart=on-failure
 
 [Install]
-WantedBy = multi-user.target
+WantedBy=multi-user.target
 
 '@
         $serviceFileContent = Get-Content $serviceConfigurationPath | Out-String
@@ -47,7 +47,7 @@ WantedBy = multi-user.target
             $systemctlOutput | Should Not Be $null
             $systemctlOutput.GetType().FullName | Should Be 'System.Object[]'
             $systemctlOutput.Length | Should BeGreaterThan 3
-            $systemctlOutput[0] | Should Match 'kapacitor.service - kapacitor'
+            $systemctlOutput[0] | Should Match 'kapacitor.service - Time series data processing engine.'
         }
 
         It 'that is enabled' {

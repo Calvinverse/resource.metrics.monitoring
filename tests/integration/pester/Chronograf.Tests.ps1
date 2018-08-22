@@ -1,16 +1,16 @@
 Describe 'The chronograf application' {
     Context 'is installed' {
-        It 'with binaries in /usr/local/jenkins' {
-            '/usr/local/jenkins/jenkins.war' | Should Exist
+        It 'with binaries in /usr/bin/chronograf' {
+            '/usr/bin/chronograf' | Should Exist
         }
 
-        It 'with configuration in /var/jenkins' {
-            '/var/jenkins' | Should Exist
+        It 'with configuration in /etc/default' {
+            '/etc/default/chronograf' | Should Exist
         }
     }
 
     Context 'has been daemonized' {
-        $serviceConfigurationPath = '/etc/systemd/system/chronograf.service'
+        $serviceConfigurationPath = '/lib/systemd/system/chronograf.service'
         if (-not (Test-Path $serviceConfigurationPath))
         {
             It 'has a systemd configuration' {
@@ -19,24 +19,27 @@ Describe 'The chronograf application' {
         }
 
         $expectedContent = @'
-[Service]
-Type = forking
-PIDFile = /usr/local/jenkins/jenkins_pid
-ExecStart = /usr/local/jenkins/run_jenkins.sh
-ExecReload = /usr/bin/curl http://localhost:8080/builds/reload
-ExecStop = /usr/bin/curl http://localhost:8080/builds/safeExit
-Restart = on-failure
-User = jenkins
-EnvironmentFile = /etc/jenkins_environment
+# If you modify this, please also make sure to edit init.sh
 
 [Unit]
-Description = Jenkins CI system
-Documentation = https://jenkins.io
-Requires = network-online.target
-After = network-online.target
+Description=Open source monitoring and visualization UI for the entire TICK stack.
+Documentation="https://www.influxdata.com/time-series-platform/chronograf/"
+After=network-online.target
+
+[Service]
+User=chronograf
+Group=chronograf
+Environment="HOST=0.0.0.0"
+Environment="PORT=8888"
+Environment="BOLT_PATH=/var/lib/chronograf/chronograf-v1.db"
+Environment="CANNED_PATH=/usr/share/chronograf/canned"
+EnvironmentFile=-/etc/default/chronograf
+ExecStart=/usr/bin/chronograf $CHRONOGRAF_OPTS
+KillMode=control-group
+Restart=on-failure
 
 [Install]
-WantedBy = multi-user.target
+WantedBy=multi-user.target
 
 '@
         $serviceFileContent = Get-Content $serviceConfigurationPath | Out-String
