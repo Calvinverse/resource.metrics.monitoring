@@ -81,7 +81,7 @@ file '/etc/consul/conf.d/kapacitor-http.json' do
         {
           "checks": [
             {
-              "http": "http://localhost:#{kapacitor_http_port}/api/health",
+              "http": "http://localhost:#{kapacitor_http_port}/kapacitor/v1/ping",
               "id": "kapacitor_http_health_check",
               "interval": "30s",
               "method": "GET",

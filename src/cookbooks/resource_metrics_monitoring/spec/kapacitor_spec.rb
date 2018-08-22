@@ -47,7 +47,7 @@ describe 'resource_metrics_monitoring::kapacitor' do
           {
             "checks": [
               {
-                "http": "http://localhost:9092/api/health",
+                "http": "http://localhost:9092/kapacitor/v1/ping",
                 "id": "kapacitor_http_health_check",
                 "interval": "30s",
                 "method": "GET",
