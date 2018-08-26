@@ -123,7 +123,7 @@ file "#{consul_template_template_path}/#{kapacitor_default_template_file}" do
     cat <<'EOT' > #{kapacitor_default_file}
     # The hostname of this node.
     # Must be resolvable by any configured InfluxDB hosts.
-    hostname = "{{ env "HOSTNAME" }}"
+    hostname = "{{ file "/etc/hostname" | trimSpace }}"
     # Directory for storing a small amount of metadata about the server.
     data_dir = "#{kapacitor_data_directory}"
 

@@ -97,7 +97,7 @@ describe 'resource_metrics_monitoring::kapacitor' do
       cat <<'EOT' > /etc/kapacitor/kapacitor.conf
       # The hostname of this node.
       # Must be resolvable by any configured InfluxDB hosts.
-      hostname = "{{ env "HOSTNAME" }}"
+      hostname = "{{ file "/etc/hostname" | trimSpace }}"
       # Directory for storing a small amount of metadata about the server.
       data_dir = "/var/lib/kapacitor"
 
