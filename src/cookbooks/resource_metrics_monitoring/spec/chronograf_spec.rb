@@ -101,7 +101,7 @@ describe 'resource_metrics_monitoring::chronograf' do
       PORT=8888
       BASE_PATH=/dashboards/monitoring
 
-      INFLUXDB_URL=http//{{ key "config/services/metrics/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/metrics/protocols/http/port" }}
+      INFLUXDB_URL=http://{{ key "config/services/metrics/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/metrics/protocols/http/port" }}
 
       KAPACITOR_URL=http://127.0.0.1:9092
       EOT

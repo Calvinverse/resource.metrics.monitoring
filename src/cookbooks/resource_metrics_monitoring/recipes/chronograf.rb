@@ -117,7 +117,7 @@ file "#{consul_template_template_path}/#{chronograf_default_template_file}" do
     PORT=#{chronograf_http_port}
     BASE_PATH=/#{proxy_path}
 
-    INFLUXDB_URL=http//{{ key "config/services/metrics/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/metrics/protocols/http/port" }}
+    INFLUXDB_URL=http://{{ key "config/services/metrics/protocols/http/host" }}.service.{{ key "config/services/consul/domain" }}:{{ key "config/services/metrics/protocols/http/port" }}
 
     KAPACITOR_URL=http://127.0.0.1:#{kapacitor_http_port}
     EOT
