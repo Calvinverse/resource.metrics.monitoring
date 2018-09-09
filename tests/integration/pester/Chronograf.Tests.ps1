@@ -42,7 +42,8 @@ Restart=on-failure
 WantedBy=multi-user.target
 
 '@
-        $serviceFileContent = Get-Content $serviceConfigurationPath | Out-String
+        # There's a rogue space at the end of one of the lines which breaks the comparison
+        $serviceFileContent = Get-Content $serviceConfigurationPath | Foreach-Object { $_.Trim() } | Out-String
         $systemctlOutput = & systemctl status chronograf
         It 'with a systemd service' {
             $serviceFileContent | Should Be ($expectedContent -replace "`r", "")
@@ -50,7 +51,7 @@ WantedBy=multi-user.target
             $systemctlOutput | Should Not Be $null
             $systemctlOutput.GetType().FullName | Should Be 'System.Object[]'
             $systemctlOutput.Length | Should BeGreaterThan 3
-            $systemctlOutput[0] | Should Match 'chronograf.service - chronograf'
+            $systemctlOutput[0] | Should Match 'chronograf.service - Open source monitoring and visualization UI for the entire TICK stack.'
         }
 
         It 'that is enabled' {

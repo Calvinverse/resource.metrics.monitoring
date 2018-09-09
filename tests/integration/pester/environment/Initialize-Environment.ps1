@@ -97,11 +97,6 @@ function Set-ConsulKV
     & consul kv put -http-addr=http://127.0.0.1:8550 config/environment/mail/smtp/host 'smtp.example.com'
     & consul kv put -http-addr=http://127.0.0.1:8550 config/environment/mail/suffix 'example.com'
 
-    # Load config/services/builds
-    & consul kv put -http-addr=http://127.0.0.1:8550 config/services/builds/protocols/http/host 'active.builds'
-    & consul kv put -http-addr=http://127.0.0.1:8550 config/services/builds/protocols/http/port '8080'
-    & consul kv put -http-addr=http://127.0.0.1:8550 config/services/builds/url/proxy 'http://example.com/builds'
-
     # Load config/services/consul
     & consul kv put -http-addr=http://127.0.0.1:8550 config/services/consul/datacenter 'test-integration'
     & consul kv put -http-addr=http://127.0.0.1:8550 config/services/consul/domain 'integrationtest'
@@ -112,6 +107,8 @@ function Set-ConsulKV
     # a black hole
     & consul kv put -http-addr=http://127.0.0.1:8550 config/services/metrics/databases/system 'system'
     & consul kv put -http-addr=http://127.0.0.1:8550 config/services/metrics/databases/statsd 'services'
+    & consul kv put -http-addr=http://127.0.0.1:8550 config/services/metrics/protocols/http/host 'metrics'
+    & consul kv put -http-addr=http://127.0.0.1:8550 config/services/metrics/protocols/http/port '8086'
 
     # load config/services/queue
     & consul kv put -http-addr=http://127.0.0.1:8550 config/services/queue/protocols/http/host 'http.queue'
