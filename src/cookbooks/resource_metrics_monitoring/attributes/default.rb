@@ -46,8 +46,8 @@ default['firewall']['ipv6_enabled'] = false
 default['kapacitor']['service_user'] = 'kapacitor'
 default['kapacitor']['service_group'] = 'kapacitor'
 
-default['kapacitor']['version'] = '1.5.0'
-default['kapacitor']['shasums'] = 'ed0c8e3f7758f679bc11fca3dbb91904aeb2e49bb9e67fb53ebaa209dad79358'
+default['kapacitor']['version'] = '1.5.2'
+default['kapacitor']['shasums'] = 'f09d9faf09f69e5a5b7570fa4b69cc86c0104068fb3e90d07bebd7b4a64425b4'
 default['kapacitor']['download_url'] = 'https://dl.influxdata.com/kapacitor/releases'
 
 default['kapacitor']['port']['http'] = 9092

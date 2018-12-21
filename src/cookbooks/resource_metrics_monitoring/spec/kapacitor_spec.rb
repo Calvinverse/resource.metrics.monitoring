@@ -6,7 +6,7 @@ describe 'resource_metrics_monitoring::kapacitor' do
   context 'installs Kapacitor' do
     let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
 
-    install_version = '1.5.0'
+    install_version = '1.5.2'
     file_name = "kapacitor_#{install_version}_amd64.deb"
     it 'downloads kapacitor' do
       expect(chef_run).to create_remote_file("#{Chef::Config[:file_cache_path]}/#{file_name}").with(
