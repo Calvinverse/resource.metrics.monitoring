@@ -7,8 +7,8 @@
 default['chronograf']['service_user'] = 'chronograf'
 default['chronograf']['service_group'] = 'chronograf'
 
-default['chronograf']['version'] = '1.6.0'
-default['chronograf']['shasums'] = '9fc74eb19f001cd1a2936f20a98f9d9343ace372e860eddc8ec42b0ec04540a0'
+default['chronograf']['version'] = '1.7.5'
+default['chronograf']['shasums'] = '41957fea7266e2827d1e569ae0feb35dbe73bf6df34e5b3bf130eda3428bbcbb'
 default['chronograf']['download_url'] = 'https://dl.influxdata.com/chronograf/releases'
 
 default['chronograf']['port']['http'] = 8888
