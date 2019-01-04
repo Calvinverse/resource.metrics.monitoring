@@ -6,7 +6,7 @@ describe 'resource_metrics_monitoring::chronograf' do
   context 'installs Chronograf' do
     let(:chef_run) { ChefSpec::SoloRunner.converge(described_recipe) }
 
-    install_version = '1.6.0'
+    install_version = '1.7.5'
     file_name = "chronograf_#{install_version}_amd64.deb"
     it 'downloads chronograf' do
       expect(chef_run).to create_remote_file("#{Chef::Config[:file_cache_path]}/#{file_name}").with(
