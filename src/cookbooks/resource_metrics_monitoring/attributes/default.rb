@@ -7,8 +7,8 @@
 default['chronograf']['service_user'] = 'chronograf'
 default['chronograf']['service_group'] = 'chronograf'
 
-default['chronograf']['version'] = '1.6.0'
-default['chronograf']['shasums'] = '9fc74eb19f001cd1a2936f20a98f9d9343ace372e860eddc8ec42b0ec04540a0'
+default['chronograf']['version'] = '1.7.5'
+default['chronograf']['shasums'] = '41957fea7266e2827d1e569ae0feb35dbe73bf6df34e5b3bf130eda3428bbcbb'
 default['chronograf']['download_url'] = 'https://dl.influxdata.com/chronograf/releases'
 
 default['chronograf']['port']['http'] = 8888
@@ -46,8 +46,8 @@ default['firewall']['ipv6_enabled'] = false
 default['kapacitor']['service_user'] = 'kapacitor'
 default['kapacitor']['service_group'] = 'kapacitor'
 
-default['kapacitor']['version'] = '1.5.0'
-default['kapacitor']['shasums'] = 'ed0c8e3f7758f679bc11fca3dbb91904aeb2e49bb9e67fb53ebaa209dad79358'
+default['kapacitor']['version'] = '1.5.2'
+default['kapacitor']['shasums'] = 'f09d9faf09f69e5a5b7570fa4b69cc86c0104068fb3e90d07bebd7b4a64425b4'
 default['kapacitor']['download_url'] = 'https://dl.influxdata.com/kapacitor/releases'
 
 default['kapacitor']['port']['http'] = 9092
